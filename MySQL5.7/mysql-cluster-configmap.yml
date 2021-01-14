@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql
+  namespace: mysql-cluster
+  labels:
+    app: mysql
+data:
+  mysql.cnf: |
+    [mysqld]
+    ## 开启二进制日志功能，可以随便取（关键）
+    log-bin=mysql-bin
+    skip-symbolic-links
+    skip-external-locking
+
+    #** 系统资源相关选项 **#
+    back_log = 50
+    max_connections = 1000
+    max_connect_errors = 10000
+    open_files_limit = 10240
+    connect-timeout = 10
+    interactive-timeout = 28800
+    slave-net-timeout = 600
+    net_read_timeout = 30
+    net_write_timeout = 60
+    net_retry_count = 10
+    #如果某个通信端口的读操作中断了，在放弃前重试多次
+    net_buffer_length = 16384
+    max_allowed_packet = 64M
+    thread_stack = 192K
+    thread_cache_size = 20
+
+    #** qcache settings 相关选项 **#
+    query_cache_limit = 2M
+    query_cache_min_res_unit = 2K
+    query_cache_size = 64M
+
+    #** default settings 相关选项 **#
+    character-set-server = utf8
+    default-storage-engine = InnoDB
+
+    #** tmp && heap settings 相关选项 **#
+    tmp_table_size = 512M
+    max_heap_table_size = 512M
+    expire_logs_days = 30
+
+    #** MyISAM 相关选项 **#
+    key_buffer_size = 256M
+    sort_buffer_size = 2M
+    read_buffer_size = 2M
+    join_buffer_size = 8M
+    read_rnd_buffer_size = 8M
+    bulk_insert_buffer_size = 64M
+    myisam_sort_buffer_size = 64M
+    myisam_max_sort_file_size = 10G
+    myisam_repair_threads = 1
+
+
