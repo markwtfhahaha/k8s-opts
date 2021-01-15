@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster-service
+  namespace: redis
+  labels:
+    app: redis-cluster
+spec:
+  type: NodePort
+  clusterIP: 10.96.130.220 #service ip,可以自行定义，deployment要改,构建集群的命令要改
+  selector:
+    app: redis-cluster
+  ports:
+  - name: port1
+    protocol: TCP
+    port: 7070 # 服务端口, 内部可访问
+    targetPort: 7070 #Pod端口
+  - name: port2
+    protocol: TCP
+    port: 17070 # 服务端口, 内部可访问
+    targetPort: 17070 #Pod端口
+
+  - name: port11
+    protocol: TCP
+    port: 7071 # 服务端口, 内部可访问
+    targetPort: 7071 #Pod端口
+  - name: port12
+    protocol: TCP
+    port: 17071 # 服务端口, 内部可访问
+    targetPort: 17071 #Pod端口
+
+  - name: port3
+    protocol: TCP
+    port: 7072 # 服务端口, 内部可访问
+    targetPort: 7072 #Pod端口
+  - name: port4
+    protocol: TCP
+    port: 17072 # 服务端口, 内部可访问
+    targetPort: 17072 #Pod端口
+
+  - name: port5
+    protocol: TCP
+    port: 7073 # 服务端口, 内部可访问
+    targetPort: 7073 #Pod端口
+  - name: port6
+    protocol: TCP
+    port: 17073 # 服务端口, 内部可访问
+    targetPort: 17073 #Pod端口
+
+  - name: port7
+    protocol: TCP
+    port: 7074 # 服务端口, 内部可访问
+    targetPort: 7074 #Pod端口
+  - name: port8
+    protocol: TCP
+    port: 17074 # 服务端口, 内部可访问
+    targetPort: 17074 #Pod端口
+
+  - name: port9
+    protocol: TCP
+    port: 7075 # 服务端口, 内部可访问
+    targetPort: 7075 #Pod端口
+  - name: port10
+    protocol: TCP
+    port: 17075 # 服务端口, 内部可访问
+    targetPort: 17075 #Pod端口
+

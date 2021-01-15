@@ -1,0 +1,211 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cluster
+  namespace: redis
+  labels:
+    app: redis-cluster
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-cluster
+  template:
+    metadata:
+      labels:
+        app: redis-cluster
+    spec:
+      hostAliases: 
+      - ip: "10.96.130.220" #添加hosts解析,指向service ip
+        hostnames:
+        - "redis-node-0"
+        - "redis-node-1"
+        - "redis-node-2"
+        - "redis-node-3"
+        - "redis-node-4"
+        - "redis-node-5"
+      containers:
+        - name: redis-node-0
+          image: docker.io/bitnami/redis-cluster:6.0-debian-10
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 7070
+            - containerPort: 17070
+          volumeMounts:
+            - mountPath: "/bitnami/redis/data"
+              subPath: "redis/redis-node-0" #文件路径,以挂载的pvc为基准
+              name: redis-data
+          env:
+            - name: REDIS_PORT_NUMBER
+              value: "7070"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: REDIS_DISABLE_COMMANDS
+              value: "FLUSHDB,FLUSHALL"
+            - name: REDIS_PASSWORD
+              value: "123456"
+            - name: REDIS_NODES
+              value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
+            - name: REDIS_ANNOUNCE_IP
+              value: redis-cluster-service
+
+        - name: redis-node-1
+          image: docker.io/bitnami/redis-cluster:6.0-debian-10
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 7071
+            - containerPort: 17071
+          volumeMounts:
+            - mountPath: "/bitnami/redis/data"
+              subPath: "redis/redis-node-1" #文件路径,以挂载的pvc为基准
+              name: redis-data
+          env:
+            - name: REDIS_PORT_NUMBER
+              value: "7071"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: REDIS_DISABLE_COMMANDS
+              value: "FLUSHDB,FLUSHALL"
+            - name: REDIS_PASSWORD
+              value: "123456"
+            - name: REDIS_NODES
+              value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
+            - name: REDIS_ANNOUNCE_IP
+              value: redis-cluster-service
+
+        - name: redis-node-2
+          image: docker.io/bitnami/redis-cluster:6.0-debian-10
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 7072
+            - containerPort: 17072
+          volumeMounts:
+            - mountPath: "/bitnami/redis/data"
+              subPath: "redis/redis-node-2" #文件路径,以挂载的pvc为基准
+              name: redis-data
+          env:
+            - name: REDIS_PORT_NUMBER
+              value: "7072"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: REDIS_DISABLE_COMMANDS
+              value: "FLUSHDB,FLUSHALL"
+            - name: REDIS_PASSWORD
+              value: "123456"
+            - name: REDIS_NODES
+              value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
+            - name: REDIS_ANNOUNCE_IP
+              value: redis-cluster-service
+        - name: redis-node-3
+          image: docker.io/bitnami/redis-cluster:6.0-debian-10
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 7073
+            - containerPort: 17073
+          volumeMounts:
+            - mountPath: "/bitnami/redis/data"
+              subPath: "redis/redis-node-3" #文件路径,以挂载的pvc为基准
+              name: redis-data
+          env:
+            - name: REDIS_PORT_NUMBER
+              value: "7073"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: REDIS_DISABLE_COMMANDS
+              value: "FLUSHDB,FLUSHALL"
+            - name: REDIS_PASSWORD
+              value: "123456"
+            - name: REDIS_NODES
+              value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
+            - name: REDIS_ANNOUNCE_IP
+              value: redis-cluster-service
+        - name: redis-node-4
+          image: docker.io/bitnami/redis-cluster:6.0-debian-10
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 7074
+            - containerPort: 17074
+          volumeMounts:
+            - mountPath: "/bitnami/redis/data"
+              subPath: "redis/redis-node-4" #文件路径,以挂载的pvc为基准
+              name: redis-data
+          env:
+            - name: REDIS_PORT_NUMBER
+              value: "7074"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: REDIS_DISABLE_COMMANDS
+              value: "FLUSHDB,FLUSHALL"
+            - name: REDIS_PASSWORD
+              value: "123456"
+            - name: REDIS_NODES
+              value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
+            - name: REDIS_ANNOUNCE_IP
+              value: redis-cluster-service
+        - name: redis-node-5
+          image: docker.io/bitnami/redis-cluster:6.0-debian-10
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 7075
+            - containerPort: 17075
+          volumeMounts:
+            - mountPath: "/bitnami/redis/data"
+              subPath: "redis/redis-node-5" #文件路径,以挂载的pvc为基准
+              name: redis-data
+          env:
+            - name: REDIS_PORT_NUMBER
+              value: "7075"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: REDIS_DISABLE_COMMANDS
+              value: "FLUSHDB,FLUSHALL"
+            - name: REDIS_PASSWORD
+              value: "123456"
+            - name: REDIS_NODES
+              value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
+            - name: REDIS_ANNOUNCE_IP
+              value: redis-cluster-service
+
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-redis
+
+
+

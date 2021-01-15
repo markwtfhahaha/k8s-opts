@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis6379
+  namespace: redis
+  labels:
+    app: redis6379
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis6379
+  template:
+    metadata:
+      labels:
+        app: redis6379
+    spec:
+      containers:
+        - name: redis6379
+          image: docker.io/bitnami/redis:6.0-debian-10
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis/run.sh --maxmemory 10240mb"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: "/bitnami/redis/data"
+              subPath: "redis/redis6379" #文件路径,以挂载的pvc为基准
+              name: redis-data
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: REDIS_DISABLE_COMMANDS
+              value: "FLUSHDB,FLUSHALL"
+            - name: REDIS_PASSWORD
+              value: "123456"
+
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-redis
