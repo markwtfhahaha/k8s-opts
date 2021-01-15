@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab
+  namespace: gitlab
+  labels:
+    app: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab
+  template:
+    metadata:
+      labels:
+        app: gitlab
+    spec:
+      containers:
+        - name: gitlab
+          image: twang2218/gitlab-ce-zh:latest
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8929
+            - containerPort: 22
+          volumeMounts:
+            - mountPath: "/etc/gitlab"
+              subPath: "gitlab/config" #文件路径,以挂载的pvc为基准
+              name: gitlab-data
+            - mountPath: "/var/log/gitlab"
+              subPath: "gitlab/logs" #文件路径,以挂载的pvc为基准
+              name: gitlab-data
+            - mountPath: "/var/opt/gitlab"
+              subPath: "gitlab/data" #文件路径,以挂载的pvc为基准
+              name: gitlab-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: GITLAB_OMNIBUS_CONFIG
+              value: |
+                external_url 'http://0.0.0.0:8929/'
+                #gitlab_rails['gitlab_shell_ssh_port'] = 2224
+                gitlab_rails['time_zone'] = 'Asia/Shanghai' 
+
+
+      volumes:
+        - name: gitlab-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-gitlab
