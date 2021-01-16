@@ -1,0 +1,172 @@
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: minio-cluster-0
+  namespace: minio
+  labels:
+     app: minio-cluster-0
+spec:
+  selector:
+    matchLabels:
+      app: minio-cluster-0
+  # serviceName: minio-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minio-cluster-0
+    spec:
+      containers:
+      - name: minio-cluster-0
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "minio"
+        - name: MINIO_SECRET_KEY
+          value: "minio123"
+        image: minio/minio
+        args:
+        - server
+        - http://minio-cluster-{0...3}-service:9000/data
+
+        ports:
+        - containerPort: 9000
+          #hostPort: 9000
+        volumeMounts:
+          - mountPath: /data
+            name: minio-data
+            subPath: "minio/minio-cluster/0"
+
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-minio
+
+---
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: minio-cluster-1
+  namespace: minio
+  labels:
+     app: minio-cluster-1
+spec:
+  selector:
+    matchLabels:
+      app: minio-cluster-1
+  # serviceName: minio-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minio-cluster-1
+    spec:
+      containers:
+      - name: minio-cluster-1
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "minio"
+        - name: MINIO_SECRET_KEY
+          value: "minio123"
+        image: minio/minio
+        args:
+        - server
+        - http://minio-cluster-{0...3}-service:9000/data
+        ports:
+        - containerPort: 9000
+          #hostPort: 9000
+        volumeMounts:
+          - mountPath: /data
+            name: minio-data
+            subPath: "minio/minio-cluster/1"
+
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-minio
+
+---
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: minio-cluster-2
+  namespace: minio
+  labels:
+     app: minio-cluster-2
+spec:
+  selector:
+    matchLabels:
+      app: minio-cluster-2
+  # serviceName: minio-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minio-cluster-2
+    spec:
+      containers:
+      - name: minio-cluster-2
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "minio"
+        - name: MINIO_SECRET_KEY
+          value: "minio123"
+        image: minio/minio
+        args:
+        - server
+        - http://minio-cluster-{0...3}-service:9000/data
+        ports:
+        - containerPort: 9000
+          #hostPort: 9000
+        volumeMounts:
+          - mountPath: /data
+            name: minio-data
+            subPath: "minio/minio-cluster/2"
+
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-minio
+
+---
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: minio-cluster-3
+  namespace: minio
+  labels:
+     app: minio-cluster-3
+spec:
+  selector:
+    matchLabels:
+      app: minio-cluster-3
+  # serviceName: minio-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minio-cluster-3
+    spec:
+      containers:
+      - name: minio-cluster-3
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "minio"
+        - name: MINIO_SECRET_KEY
+          value: "minio123"
+        image: minio/minio
+        args:
+        - server
+        - http://minio-cluster-{0...3}-service:9000/data
+        ports:
+        - containerPort: 9000
+          #hostPort: 9000
+        volumeMounts:
+          - mountPath: /data
+            name: minio-data
+            subPath: "minio/minio-cluster/3"
+
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-minio
+

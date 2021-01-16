@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio9000
+  namespace: minio
+  labels:
+    app: minio9000
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio9000
+  template:
+    metadata:
+      labels:
+        app: minio9000
+    spec:
+      containers:
+        - name: minio9000
+          image: minio/minio
+          args: 
+            - server
+            - /data
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - mountPath: "/data"
+              subPath: "minio/minio9000" #文件路径,以挂载的pvc为基准
+              name: minio-data
+          env:
+            - name: MINIO_ACCESS_KEY
+              value: "minio"
+            - name: MINIO_SECRET_KEY
+              value: "minio123"
+
+      volumes:
+        - name: minio-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-minio

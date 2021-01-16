@@ -1,0 +1,86 @@
+# # headless service 据此定义容器POD hostname
+# # $(pod-name-{i}).$(service name).$(namespace).svc.cluster.local /不用
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: minio-headless
+#   namespace: minio
+#   labels:
+#     app: minio-headless
+# spec:
+#   clusterIP: None
+#   ports:
+#     - port: 9000
+#       name: minio-headless
+#   selector:
+#     app: minio-cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-cluster-0-service
+  namespace: minio
+  labels:
+    app: minio-cluster-0-service
+spec:
+  type: NodePort
+  ports:
+    - name: port1
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio-cluster-0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-cluster-1-service
+  namespace: minio
+  labels:
+    app: minio-cluster-1-service
+spec:
+  type: NodePort
+  ports:
+    - name: port1
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio-cluster-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-cluster-2-service
+  namespace: minio
+  labels:
+    app: minio-cluster-2-service
+spec:
+  type: NodePort
+  ports:
+    - name: port1
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio-cluster-2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-cluster-3-service
+  namespace: minio
+  labels:
+    app: minio-cluster-3-service
+spec:
+  type: NodePort
+  ports:
+    - name: port1
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio-cluster-3
+
+
