@@ -27,7 +27,7 @@ spec:
       containers:
         - name: redis-node-0
           image: docker.io/bitnami/redis-cluster:6.0-debian-10
-          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip 10.96.130.220"]
           securityContext:
             enabled: true
             privileged: true
@@ -53,11 +53,11 @@ spec:
             - name: REDIS_NODES
               value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
             - name: REDIS_ANNOUNCE_IP
-              value: redis-cluster-service
+              value: 10.96.130.220
 
         - name: redis-node-1
           image: docker.io/bitnami/redis-cluster:6.0-debian-10
-          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip 10.96.130.220"]
           securityContext:
             enabled: true
             privileged: true
@@ -83,11 +83,11 @@ spec:
             - name: REDIS_NODES
               value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
             - name: REDIS_ANNOUNCE_IP
-              value: redis-cluster-service
+              value: 10.96.130.220
 
         - name: redis-node-2
           image: docker.io/bitnami/redis-cluster:6.0-debian-10
-          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip 10.96.130.220"]
           securityContext:
             enabled: true
             privileged: true
@@ -113,10 +113,10 @@ spec:
             - name: REDIS_NODES
               value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
             - name: REDIS_ANNOUNCE_IP
-              value: redis-cluster-service
+              value: 10.96.130.220
         - name: redis-node-3
           image: docker.io/bitnami/redis-cluster:6.0-debian-10
-          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip 10.96.130.220"]
           securityContext:
             enabled: true
             privileged: true
@@ -145,7 +145,7 @@ spec:
               value: redis-cluster-service
         - name: redis-node-4
           image: docker.io/bitnami/redis-cluster:6.0-debian-10
-          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip 10.96.130.220"]
           securityContext:
             enabled: true
             privileged: true
@@ -171,10 +171,10 @@ spec:
             - name: REDIS_NODES
               value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
             - name: REDIS_ANNOUNCE_IP
-              value: redis-cluster-service
+              value: 10.96.130.220
         - name: redis-node-5
           image: docker.io/bitnami/redis-cluster:6.0-debian-10
-          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip redis-cluster-service"]
+          args: ["/bin/sh","-c","/opt/bitnami/scripts/redis-cluster/run.sh --maxmemory 20480mb --cluster-announce-ip 10.96.130.220"]
           securityContext:
             enabled: true
             privileged: true
@@ -200,7 +200,7 @@ spec:
             - name: REDIS_NODES
               value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
             - name: REDIS_ANNOUNCE_IP
-              value: redis-cluster-service
+              value: 10.96.130.220
 
       volumes:
         - name: redis-data

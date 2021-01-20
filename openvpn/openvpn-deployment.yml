@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openvpn
+  namespace: mark-k8s-dev
+  labels:
+    app: openvpn
+spec:
+  strategy:
+    type: RollingUpdate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openvpn
+  template:
+    metadata:
+      labels:
+        name: openvpn
+        app: openvpn
+    spec:
+      containers:
+      - image: kylemanna/openvpn
+        name: openvpn
+        ports:
+        - containerPort: 1194
+          name: openvpn
+          protocol: UDP
+        securityContext:
+          enabled: true
+          privileged: true
+          allowPrivilegeEscalation: true
+          runAsUser: 0
+          fsGroup: 0
+          capabilities:
+            add:
+            - NET_ADMIN
+        volumeMounts:
+          - mountPath: "/etc/openvpn"
+            subPath: "openvpn" #文件路径,以挂载的pvc为基准
+            name: openvpn-data
+
+      volumes:
+        - name: openvpn-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub

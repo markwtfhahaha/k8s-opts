@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: openvpn-service
+  namespace: mark-k8s-dev
+  labels:
+    app: openvpn
+spec:
+  ports:
+    - port: 1194
+      targetPort: 1194
+      #nodePort: 31304
+      protocol: UDP
+      name: openvpn
+  selector:
+    app: openvpn
+  type: NodePort

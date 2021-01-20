@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpn-l2tp
+  namespace: default
+  labels:
+    app: vpn-l2tp
+spec:
+  selector:
+    matchLabels:
+      app: vpn-l2tp
+  serviceName: vpn-l2tp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vpn-l2tp
+    spec:
+      containers:
+        - name: vpn-l2tp
+          image: hwdsl2/ipsec-vpn-server
+          imagePullPolicy: Always
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 500
+              hostPort: 500
+              name: vpn-isakmp
+              protocol: UDP
+            - containerPort: 4500
+              hostPort: 4500
+              name: vpn-ike
+              protocol: UDP
+            - containerPort: 1701
+              hostPort: 1701
+              name: vpn-1701
+              protocol: UDP
+          env:
+            - name: "VPN_IPSEC_PSK"
+              value: "mark-k8s-psk"
+            - name: "VPN_USER"
+              value: "k8s-vpn"
+            - name: "VPN_PASSWORD"
+              value: "k8s-vpn-hahaha"
