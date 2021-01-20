@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: mark-k8s-dev
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: bitnami/mongodb:4.2-debian-10
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: "/bitnami/mongodb/"
+              subPath: "mongodb/data" #文件路径,以挂载的pvc为基准
+              name: mongodb-data
+            - mountPath: "/opt/bitnami/mongodb/logs"
+              subPath: "mongodb/logs" #文件路径,以挂载的pvc为基准
+              name: mongodb-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: MONGODB_ROOT_PASSWORD
+              value: "123456"
+            - name: MONGODB_ADVERTISED_HOSTNAME
+              value: "mongodb-service"
+            - name: MONGODB_USERNAME
+              value: "testuser"
+            - name: MONGODB_PASSWORD
+              value: "123456"
+            - name: MONGODB_DATABASE
+              value: "testdb"
+      volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
