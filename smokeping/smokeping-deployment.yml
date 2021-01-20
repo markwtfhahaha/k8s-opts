@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smokeping
+  namespace: mark-k8s-dev
+  labels:
+    app: smokeping
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smokeping
+  template:
+    metadata:
+      labels:
+        app: smokeping
+    spec:
+      containers:
+        - name: smokeping
+          image: linuxserver/smokeping
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: "/config"
+              subPath: "smokeping/config" #文件路径,以挂载的pvc为基准
+              name: smokeping-data
+            - mountPath: "/data"
+              subPath: "smokeping/data" #文件路径,以挂载的pvc为基准
+              name: smokeping-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+
+      volumes:
+        - name: smokeping-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
