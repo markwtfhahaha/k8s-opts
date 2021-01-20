@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jbosstest
+  namespace: mark-k8s-dev
+  labels:
+    app: jbosstest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jbosstest
+  template:
+    metadata:
+      labels:
+        app: jbosstest
+    spec:
+      containers:
+        - name: jbosstest
+          image: jboss/wildfly:10.0.0.Final
+          command: ["/bin/sh"]
+          args: ["-c", "/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/opt/jboss/wildfly/standalone/deployments/"
+              subPath: "java-projects/jbosstest" #文件路径,以挂载的pvc为基准
+              name: jbosstest-data
+            - mountPath: "/opt/jboss/wildfly/bin/standalone.conf" #挂载jboss配置文件，可以自定义
+              subPath: "standalone.conf"
+              name: jboss-conf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: jbosstest-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+        - name: jboss-conf
+          configMap:
+            name: jboss-standalone-conf
+            # items:
+            # - key: standalone.conf       #key为文件名称
+            #   path: standalone.conf      #文件路径内容

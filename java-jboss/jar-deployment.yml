@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jartest
+  namespace: mark-k8s-dev
+  labels:
+    app: jartest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jartest
+  template:
+    metadata:
+      labels:
+        app: jartest
+    spec:
+      containers:
+        - name: jartest
+          image: jboss/wildfly:10.0.0.Final
+          command: ["/bin/sh"]
+          args: ["-c", "/usr/lib/jvm/java/bin/java -Duser.dir=\"/data\" -Duser.timezone=GMT+8 -Xms1024m -Xmx10240m -jar /data/war.war"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8880
+          volumeMounts:
+            - mountPath: "/data"
+              subPath: "java-projects/jartest" #文件路径,以挂载的pvc为基准
+              name: jartest-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: jartest-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
