@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper2181
+  namespace: mark-k8s-dev
+  labels:
+    app: zookeeper2181
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper2181
+  template:
+    metadata:
+      labels:
+        app: zookeeper2181
+    spec:
+      containers:
+        - name: zookeeper2181
+          image: bitnami/zookeeper:latest
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 2181
+          volumeMounts:
+            - mountPath: "/bitnami/zookeeper"
+              subPath: "zookeeper2181/data" #文件路径,以挂载的pvc为基准
+              name: zookeeper2181-data
+          env:
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+
+      volumes:
+        - name: zookeeper2181-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
