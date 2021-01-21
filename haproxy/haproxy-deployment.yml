@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haproxy
+  namespace: mark-k8s-dev
+  labels:
+    app: haproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      containers:
+        - name: haproxy
+          image: tecnativa/tcp-proxy
+          ports:
+            - containerPort: 80
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: LISTEN
+              value: ":80"
+            - name: TALK
+              value: "www.dg0.co:80"
+            - name: TIMEOUT_TUNNEL
+              value: 3600s
+
+
