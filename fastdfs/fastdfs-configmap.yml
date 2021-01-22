@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fastdfs-conf
+  namespace: mark-k8s-dev
+  labels:
+    app: fastdfs-conf
+data:
+  storage.conf: |
+    disabled=false
+    group_name=group1
+    bind_addr=
+    client_bind=true
+    port=23000
+    connect_timeout=30
+    network_timeout=60
+    heart_beat_interval=30
+    stat_report_interval=60
+    base_path=/fastdfs/storage
+    max_connections=256
+    buff_size = 256KB
+    accept_threads=1
+    work_threads=4
+    disk_rw_separated = true
+    disk_reader_threads = 1
+    disk_writer_threads = 1
+    sync_wait_msec=50
+    sync_interval=0
+    sync_start_time=00:00
+    sync_end_time=23:59
+    write_mark_file_freq=500
+    store_path_count=1
+    store_path0=/fastdfs/store_path
+    subdir_count_per_path=256
+    tracker_server=fastdfs-service:22122
+    log_level=info
+    run_by_group=
+    run_by_user=
+    allow_hosts=*
+    file_distribute_path_mode=0
+    file_distribute_rotate_count=100
+    fsync_after_written_bytes=0
+    sync_log_buff_interval=10
+    sync_binlog_buff_interval=10
+    sync_stat_file_interval=300
+    thread_stack_size=512KB
+    upload_priority=10
+    if_alias_prefix=
+    check_file_duplicate=0
+    file_signature_method=hash
+    key_namespace=FastDFS
+    keep_alive=0
+    use_access_log = false
+    rotate_access_log = false
+    access_log_rotate_time=00:00
+    rotate_error_log = false
+    error_log_rotate_time=00:00
+    rotate_access_log_size = 0
+    rotate_error_log_size = 0
+    file_sync_skip_invalid_record=false
+    use_connection_pool = false
+    connection_pool_max_idle_time = 3600
+    http.domain_name=
+    tracker_server=fastdfs-service:22122
+    http.server_port=8888
+  nginx.conf: |
+    #user  nobody;
+    worker_processes  1;
+
+    #error_log  logs/error.log;
+    #error_log  logs/error.log  notice;
+    #error_log  logs/error.log  info;
+
+    #pid        logs/nginx.pid;
+
+
+    events {
+        worker_connections  1024;
+    }
+
+
+    http {
+        include       mime.types;
+        default_type  application/octet-stream;
+
+        #access_log  logs/access.log  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        #keepalive_timeout  0;
+        keepalive_timeout  65;
+
+        #gzip  on;
+
+        server {
+            listen       8088;
+            server_name  localhost;
+
+            #charset koi8-r;
+
+            #缩略图需要使用插件，需要单独构建nginx镜像，此处忽略
+            #location /group([0-9])/M00/.*\.(gif|jpg|jpeg|png)$ {
+            #   root /fastdfs/storage/data;
+            #   image on;
+            #   image_output off;
+            #   image_jpeg_quality 75;
+            #   image_backend off;
+            #    image_backend_server http://baidu.com/docs/aabbc.png;
+          # }
+
+            # group1
+            location /group1/M00 {
+            # 文件存储目录
+                root /fastdfs/storage/data;
+                ngx_fastdfs_module;
+            }
+
+            #error_page  404              /404.html;
+
+            # redirect server error pages to the static page /50x.html
+            #
+            error_page   500 502 503 504  /50x.html;
+            location = /50x.html {
+                root   html;
+            }
+    }
+    }

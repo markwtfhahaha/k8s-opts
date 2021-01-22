@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mqtt-conf
+  namespace: mark-k8s-dev
+  labels:
+    app: mqtt-conf
+data:
+  mosquitto.conf: |
+    port 8883
+
+    password_file /mosquitto/config/passwords.txt
+
+    allow_anonymous false
+
+    #cafile /mosquitto/config/certs/rootCA.crt
+    #keyfile /mosquitto/config/certs/server.key
+    #certfile /mosquitto/config/certs/server.crt
+    #tls_version tlsv1.2
+
+    #persistence true
+    persistence_location /mosquitto/data/
+  #密码生成: mosquitto_passwd -U passwords.txt, 文件先填写明文，然后执行命令自动替换成密文
+  passwords.txt: |
+    admin:$6$CvXKuTuCud4NiOiV$Fg0+PhOaAYg21/g38/XwhQcsQoPHt0l1N4BdAet2RCLu7O0nWUb8kPfc8EN7MZoDdbjjtyZ2BpDRDYw0/WI+kw==

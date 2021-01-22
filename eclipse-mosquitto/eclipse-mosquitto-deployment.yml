@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtt
+  namespace: mark-k8s-dev
+  labels:
+    app: mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqtt
+  template:
+    metadata:
+      labels:
+        app: mqtt
+    spec:
+      containers:
+        - name: mqtt
+          image: docker-harbor.clubs999.com/public/eclipse-mosquitto:latest
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8883
+            - containerPort: 1883
+          volumeMounts:
+            - mountPath: "/mosquitto/data"
+              subPath: "mqtt/data" #文件路径,以挂载的pvc为基准
+              name: mqtt-data
+            - mountPath: "/mosquitto/config/mosquitto.conf" #挂载配置文件，可以自定义
+              subPath: "mosquitto.conf"
+              name: mqtt-conf
+            - mountPath: "/mosquitto/config/passwords.txt" #挂载密码配置文件，可以自定义
+              subPath: "passwords.txt"
+              name: mqtt-conf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: mqtt-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+        - name: mqtt-conf
+          configMap:
+            name: mqtt-conf
+
+

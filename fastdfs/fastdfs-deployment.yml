@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastdfs
+  namespace: mark-k8s-dev
+  labels:
+    app: fastdfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastdfs
+  template:
+    metadata:
+      labels:
+        app: fastdfs
+    spec:
+      containers:
+        - name: fastdfs-tracker
+          image: docker-harbor.clubs999.com/public/season/fastdfs:1.2
+          # command: ["/bin/bash"]
+          args: ["tracker"]
+          ports:
+            - containerPort: 22122
+          volumeMounts:
+            - mountPath: "/fastdfs/tracker/data"
+              subPath: "fastdfs/tracker/data" #文件路径,以挂载的pvc为基准
+              name: fastdfs-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+        - name: fastdfs-storage
+          image: docker-harbor.clubs999.com/public/season/fastdfs:1.2
+          # command: ["/bin/sh"]
+          args: ["storage"]
+          ports:
+            - containerPort: 23000
+          volumeMounts:
+            - mountPath: "/fastdfs/storage/data"
+              subPath: "fastdfs/storage/data" #文件路径,以挂载的pvc为基准
+              name: fastdfs-data
+            - mountPath: "/fastdfs/store_path"
+              subPath: "fastdfs/store_path" #文件路径,以挂载的pvc为基准
+              name: fastdfs-data
+            - mountPath: "/fdfs_conf/storage.conf" #挂载配置文件，可以自定义
+              subPath: "storage.conf"
+              name: fastdfs-conf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: TRACKER_SERVER
+              value: "fastdfs-service:22122"
+        - name: fastdfs-nginx
+          image: docker-harbor.clubs999.com/public/season/fastdfs:1.2
+          # command: ["/bin/sh"]
+          args: ["nginx"]
+          ports:
+            - containerPort: 8088
+          volumeMounts:
+            - mountPath: "/fastdfs/store_path"
+              subPath: "fastdfs/store_path" #文件路径,以挂载的pvc为基准
+              name: fastdfs-data
+            - mountPath: "/etc/nginx/conf/nginx.conf" #挂载配置文件，可以自定义
+              subPath: "nginx.conf"
+              name: fastdfs-conf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: TRACKER_SERVER
+              value: "fastdfs-service:22122"
+      volumes:
+        - name: fastdfs-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+        - name: fastdfs-conf
+          configMap:
+            name: fastdfs-conf
+
+

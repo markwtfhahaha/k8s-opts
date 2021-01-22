@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastdfs-service
+  namespace: mark-k8s-dev
+  labels:
+    app: fastdfs-service
+spec:
+  type: NodePort
+  selector:
+    app: fastdfs
+  ports:
+  - name: port1
+    protocol: TCP
+    port: 22122 #服务端口, 内部可访问
+    targetPort: 22122 #Pod端口
+  - name: port2
+    protocol: TCP
+    port: 23000 #服务端口, 内部可访问
+    targetPort: 23000 #Pod端口 
+  - name: port3
+    protocol: TCP
+    port: 8088 #服务端口, 内部可访问
+    targetPort: 8088 #Pod端口 
