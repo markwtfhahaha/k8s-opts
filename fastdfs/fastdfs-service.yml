@@ -1,3 +1,4 @@
+#由于fastdfs会识别客户端ip，所以不能使用service访问，可以不创建service
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,6 +8,7 @@ metadata:
     app: fastdfs-service
 spec:
   type: NodePort
+  clusterIP: 10.96.130.100
   selector:
     app: fastdfs
   ports:

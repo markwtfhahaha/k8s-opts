@@ -9,7 +9,7 @@ data:
   storage.conf: |
     disabled=false
     group_name=group1
-    bind_addr=
+    bind_addr=0.0.0.0
     client_bind=true
     port=23000
     connect_timeout=30
@@ -32,7 +32,7 @@ data:
     store_path_count=1
     store_path0=/fastdfs/store_path
     subdir_count_per_path=256
-    tracker_server=fastdfs-service:22122
+    tracker_server=fastdfs:22122
     log_level=info
     run_by_group=
     run_by_user=
@@ -61,7 +61,7 @@ data:
     use_connection_pool = false
     connection_pool_max_idle_time = 3600
     http.domain_name=
-    tracker_server=fastdfs-service:22122
+    tracker_server=fastdfs:22122
     http.server_port=8888
   nginx.conf: |
     #user  nobody;
