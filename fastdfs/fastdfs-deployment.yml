@@ -15,7 +15,7 @@ spec:
       labels:
         app: fastdfs
     spec:
-      hostname: fastdfs #固定podhostname用于连接,和subdomain一起定义可以创建pod的dns解析hostname
+      hostname: fastdfs #固定podhostname用于连接,和subdomain一起定义可以创建pod的dns解析hostname: fastdfs.fastdfs-service.mark-k8s-dev.svc.cluster.local
       subdomain: fastdfs-service
       containers:
         - name: fastdfs-tracker
