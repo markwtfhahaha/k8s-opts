@@ -15,9 +15,10 @@ k8sMasterIp=10.10.10.122  #k8s master ip,用于控制工程
 nameSpace=mark-k8s-dev #k8s命名空间，用于区分项目
 
 ftpdir=/home/ftp/ftptest/mark-k8s-dev  #工程ftp目录,默认最后定义为命名空间,这样好区分
-
-gfsIp=10.10.10.131 #gfs IP 存储k8s系统持久化文件
 gfsDir=/home/gluster-data #gfs基础目录，项目所有文件存储位置，这里挂载gfs volume
+
+# gfsIp=10.10.10.131 #gfs IP 存储k8s系统持久化文件
+
 
 getmark() {
     echo "************************************************************************************************************************"
