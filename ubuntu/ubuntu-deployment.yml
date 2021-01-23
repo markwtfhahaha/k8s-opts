@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu
+  namespace: mark-k8s-dev
+  labels:
+    app: ubuntu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      hostname: ubuntu #固定podhostname用于连接,和subdomain一起定义可以创建pod的dns解析hostname: centos7.centos7-service.mark-k8s-dev.svc.cluster.local
+      subdomain: ubuntu-service
+      containers:
+        - name: ubuntu
+          image: docker-harbor.clubs999.com/public/ubuntu:20.04
+          tty: true
+          # command: ["/sbin/init"]
+          # args: ["-c","/usr/sbin/init"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          volumeMounts:
+            - mountPath: "/home"
+              subPath: "ubuntu-home/" #文件路径,以挂载的pvc为基准
+              name: ubuntu-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+      volumes:
+        - name: ubuntu-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: centos7
+  namespace: mark-k8s-dev
+  labels:
+    app: centos7
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: centos7
+  template:
+    metadata:
+      labels:
+        app: centos7
+    spec:
+      hostname: centos7 #固定podhostname用于连接,和subdomain一起定义可以创建pod的dns解析hostname: centos7.centos7-service.mark-k8s-dev.svc.cluster.local
+      subdomain: centos7-service
+      containers:
+        - name: centos7
+          image: docker-harbor.clubs999.com/public/centos:7
+          command: ["/usr/sbin/init"]
+          # args: ["-c","/usr/sbin/init"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          volumeMounts:
+            - mountPath: "/home"
+              subPath: "centos7-home/" #文件路径,以挂载的pvc为基准
+              name: centos7-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+      volumes:
+        - name: centos7-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
