@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: jartest
-          image: jboss/wildfly:10.0.0.Final
+          image: docker-harbor.clubs999.com/public/jboss/wildfly:10.0.0.Final
           command: ["/bin/sh"]
           args: ["-c", "/usr/lib/jvm/java/bin/java -Duser.dir=\"/data\" -Duser.timezone=GMT+8 -Xms1024m -Xmx10240m -jar /data/war.war"]
           securityContext:

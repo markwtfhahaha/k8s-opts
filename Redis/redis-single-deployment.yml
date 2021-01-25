@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: redis6379
-          image: docker.io/bitnami/redis:6.0-debian-10
+          image: docker-harbor.clubs999.com/public/bitnami/redis:6.0-debian-10
           args: ["/bin/sh","-c","/opt/bitnami/scripts/redis/run.sh --maxmemory 10240mb"]
           securityContext:
             enabled: true

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: jenkins
-          image: jenkins/jenkins:lts-centos7
+          image: docker-harbor.clubs999.com/public/jenkins/jenkins:lts-centos7
           securityContext:
             enabled: true
             privileged: true

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: zookeeper2181
-          image: bitnami/zookeeper:latest
+          image: docker-harbor.clubs999.com/public/bitnami/zookeeper:latest
           securityContext:
             enabled: true
             privileged: true

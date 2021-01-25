@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: vpn-l2tp
-          image: hwdsl2/ipsec-vpn-server
+          image: docker-harbor.clubs999.com/public/hwdsl2/ipsec-vpn-server
           imagePullPolicy: Always
           securityContext:
             enabled: true

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: jbosstest
-          image: jboss/wildfly:10.0.0.Final
+          image: docker-harbor.clubs999.com/public/jboss/wildfly:10.0.0.Final
           command: ["/bin/sh"]
           args: ["-c", "/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0"]
           securityContext:

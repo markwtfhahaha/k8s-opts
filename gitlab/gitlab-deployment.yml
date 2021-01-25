@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: gitlab
-          image: twang2218/gitlab-ce-zh:latest
+          image: docker-harbor.clubs999.com/public/twang2218/gitlab-ce-zh:latest
           securityContext:
             enabled: true
             privileged: true

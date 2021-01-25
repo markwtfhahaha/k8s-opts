@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: smokeping
-          image: linuxserver/smokeping
+          image: docker-harbor.clubs999.com/public/linuxserver/smokeping
           securityContext:
             enabled: true
             privileged: true

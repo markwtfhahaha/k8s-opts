@@ -19,7 +19,7 @@ spec:
         app: openvpn
     spec:
       containers:
-      - image: kylemanna/openvpn
+      - image: docker-harbor.clubs999.com/public/kylemanna/openvpn
         name: openvpn
         ports:
         - containerPort: 1194

@@ -23,7 +23,7 @@ spec:
           value: "minio"
         - name: MINIO_SECRET_KEY
           value: "minio123"
-        image: minio/minio
+        image: docker-harbor.clubs999.com/public/minio/minio
         args:
         - server
         - http://minio-cluster-{0...3}-service:9000/data
@@ -67,7 +67,7 @@ spec:
           value: "minio"
         - name: MINIO_SECRET_KEY
           value: "minio123"
-        image: minio/minio
+        image: docker-harbor.clubs999.com/public/minio/minio
         args:
         - server
         - http://minio-cluster-{0...3}-service:9000/data
@@ -110,7 +110,7 @@ spec:
           value: "minio"
         - name: MINIO_SECRET_KEY
           value: "minio123"
-        image: minio/minio
+        image: docker-harbor.clubs999.com/public/minio/minio
         args:
         - server
         - http://minio-cluster-{0...3}-service:9000/data
@@ -153,7 +153,7 @@ spec:
           value: "minio"
         - name: MINIO_SECRET_KEY
           value: "minio123"
-        image: minio/minio
+        image: docker-harbor.clubs999.com/public/minio/minio
         args:
         - server
         - http://minio-cluster-{0...3}-service:9000/data

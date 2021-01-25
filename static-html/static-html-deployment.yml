@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: testhtml
-          image: nginx
+          image: docker-harbor.clubs999.com/public/nginx
           ports:
             - containerPort: 80
           volumeMounts:

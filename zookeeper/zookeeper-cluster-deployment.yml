@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: zookeeper-1
-          image: zookeeper
+          image: docker-harbor.clubs999.com/public/zookeeper
           ports:
             - containerPort: 2181
             - containerPort: 2888
@@ -60,7 +60,7 @@ spec:
     spec:
       containers:
         - name: zookeeper-2
-          image: zookeeper
+          image: docker-harbor.clubs999.com/public/zookeeper
           ports:
             - containerPort: 2181
             - containerPort: 2888
@@ -104,7 +104,7 @@ spec:
     spec:
       containers:
         - name: zookeeper-3
-          image: zookeeper
+          image: docker-harbor.clubs999.com/public/zookeeper
           ports:
             - containerPort: 2181
             - containerPort: 2888

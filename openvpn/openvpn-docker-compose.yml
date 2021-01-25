@@ -3,7 +3,7 @@ services:
   openvpn:
     cap_add:
      - NET_ADMIN
-    image: kylemanna/openvpn
+    image: docker-harbor.clubs999.com/public/kylemanna/openvpn
     container_name: openvpn
     ports:
       - "1194:1194/udp"

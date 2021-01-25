@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: haproxy
-          image: tecnativa/tcp-proxy
+          image: docker-harbor.clubs999.com/public/tecnativa/tcp-proxy
           ports:
             - containerPort: 80
           env:

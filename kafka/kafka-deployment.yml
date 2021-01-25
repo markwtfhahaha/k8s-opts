@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: zookeeper-kafka
-          image: bitnami/zookeeper
+          image: docker-harbor.clubs999.com/public/bitnami/zookeeper
           securityContext:
             enabled: true
             privileged: true
@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
         - name: kafka-1
-          image: bitnami/kafka
+          image: docker-harbor.clubs999.com/public/bitnami/kafka
           securityContext:
             enabled: true
             privileged: true
@@ -109,7 +109,7 @@ spec:
     spec:
       containers:
         - name: kafka-2
-          image: bitnami/kafka
+          image: docker-harbor.clubs999.com/public/bitnami/kafka
           securityContext:
             enabled: true
             privileged: true
@@ -160,7 +160,7 @@ spec:
     spec:
       containers:
         - name: kafka-3
-          image: bitnami/kafka
+          image: docker-harbor.clubs999.com/public/bitnami/kafka
           securityContext:
             enabled: true
             privileged: true

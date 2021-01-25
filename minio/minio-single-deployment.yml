@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: minio9000
-          image: minio/minio
+          image: docker-harbor.clubs999.com/public/minio/minio
           args: 
             - server
             - /data
