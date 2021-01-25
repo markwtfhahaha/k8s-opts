@@ -15,7 +15,7 @@ spec:
       labels:
         app: ubuntu
     spec:
-      hostname: ubuntu #固定podhostname用于连接,和subdomain一起定义可以创建pod的dns解析hostname: centos7.centos7-service.mark-k8s-dev.svc.cluster.local
+      hostname: ubuntu #固定podhostname用于连接,和subdomain一起定义可以创建pod的dns解析hostname: ubuntu.ubuntu-service.mark-k8s-dev.svc.cluster.local
       subdomain: ubuntu-service
       containers:
         - name: ubuntu
