@@ -1,0 +1,1 @@
+因为在gfs上面部署minio不能正常启动，所以需要使用docker-compose启动minio，设置好key,secret，生成配置目录，然后拷贝到gfs挂载的位置，然后就可以正常启动了
