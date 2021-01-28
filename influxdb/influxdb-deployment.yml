@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+  namespace: tinode-chat
+  labels:
+    app: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+        - name: influxdb
+          image: docker-harbor.clubs999.com/public/bitnami/influxdb:1-debian-10
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8086
+            - containerPort: 8088
+          volumeMounts:
+            - mountPath: "/bitnami/influxdb"
+              subPath: "tinode-chat/influxdb" #文件路径,以挂载的pvc为基准
+              name: influxdb-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            # - name: INFLUXDB_HTTP_AUTH_ENABLED
+            #   value: "false"
+            - name: INFLUXDB_ADMIN_USER
+              value: "admin"
+            - name: INFLUXDB_ADMIN_USER_PASSWORD
+              value: "123456"
+            - name: INFLUXDB_USER
+              value: "tinode"
+            - name: INFLUXDB_USER_PASSWORD
+              value: "123456"
+            - name: INFLUXDB_DB
+              value: "tinode"
+
+      volumes:
+        - name: influxdb-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-tinode-chat

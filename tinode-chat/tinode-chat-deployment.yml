@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tinode-chat
+  namespace: tinode-chat
+  labels:
+    app: tinode-chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tinode-chat
+  template:
+    metadata:
+      labels:
+        app: tinode-chat
+    spec:
+      containers:
+        - name: tinode-server
+          image: docker-harbor.clubs999.com/public/tinode/tinode:latest
+          # command: ["cat /etc/tinode/tinode.conf> /var/log/tinode.conf"]
+          ports:
+            - containerPort: 6060
+          volumeMounts:
+            - mountPath: "/etc/tinode/tinode.conf"
+              subPath: "tinode.conf"
+              name: tinode-cnf
+            - mountPath: "/var/log"
+              subPath: "tinode-chat/log" #文件路径,以挂载的pvc为基准
+              name: tinode-chat-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: RESET_DB
+              value: "false"
+            - name: UPGRADE_DB
+              value: "false"
+            - name: PPROF_URL
+              value: "/pprof"
+            - name: STORE_USE_ADAPTER
+              value: "mysql"
+            - name: WAIT_FOR
+              value: "mysql-0-service.tinode-chat.svc.cluster.local:3306"
+            - name: EXT_CONFIG
+              value: "/etc/tinode/tinode.conf"
+        #可以不用部署
+        - name: tinode-exporter
+          image: docker-harbor.clubs999.com/public/tinode/exporter:latest
+          ports:
+            - containerPort: 6222
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: WAIT_FOR
+              value: "tinode-chat-service:6060"
+            - name: TINODE_ADDR
+              value: "http://tinode-chat-service:6060/stats/expvar/"
+            - name: SERVE_FOR
+              value: "influxdb"
+            - name: INFLUXDB_VERSION
+              value: "1.7"
+            - name: INFLUXDB_ORGANIZATION
+              value: "Dragon Game"
+            - name: INFLUXDB_PUSH_INTERVAL
+              value: "30"
+            - name: INFLUXDB_PUSH_ADDRESS
+              value: "https://influxdb-service.tinode-chat.svc.cluster.local:8088/tinode"
+            - name: INFLUXDB_AUTH_TOKEN
+              value: "lwawMw0zxt5RuFMt"
+
+
+      volumes:
+        - name: tinode-chat-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-tinode-chat
+        - name: tinode-cnf
+          configMap:
+            name: tinode-chat-conf
