@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jumpserver
+  namespace: mark-k8s-dev
+  labels:
+    app: jumpserver
+data:
+  TZ: "Asia/Shanghai"
+  # jumpserver.env: 
+  # 版本号可以自己根据项目的版本修改
+  Version: "2.0.1"
+
+  # MySQL
+  DB_HOST: "jumpserver-mysql-service"
+  DB_PORT: "3306"
+  DB_USER: "jumpserver"
+  DB_PASSWORD: "testpass"
+  DB_NAME: "jumpserver"
+
+  # Redis
+  REDIS_HOST: "jumpserver-redis6379-service"
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: "123456"
+
+  # Core
+  SECRET_KEY: "ACpikVZUPmIfuZTR6SUNULe4jH7ZQl6cFYyQeSwjFJ8tinbiwQ"
+  BOOTSTRAP_TOKEN: "q21ObMKHqEGaRYG3"
+
+  # koko
+  CORE_HOST: "http://localhost:8080"
+
+  # guacamole
+  JUMPSERVER_SERVER: "http://localhost:8080"
+  JUMPSERVER_KEY_DIR: "/config/guacamole/keys"
+  GUACAMOLE_HOME: "/config/guacamole"
+  GUACAMOLE_LOG_LEVEL: "ERROR"
+  JUMPSERVER_ENABLE_DRIVE: "true"
+
+  ##
+  # SECRET_KEY 保护签名数据的密匙, 首次安装请一定要修改并牢记, 后续升级和迁移不可更改, 否则将导致加密的数据不可解密。
+  # BOOTSTRAP_TOKEN 为组件认证使用的密钥, 仅组件注册时使用。组件指 koko、guacamole
+  nginx.conf: |
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log;
+    pid /run/nginx.pid;
+
+    include /usr/share/nginx/modules/*.conf;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for" "$upstream_addr"';
+
+        # access_log  /var/log/nginx/access.log  main;
+        access_log off;
+
+        sendfile            on;
+        tcp_nopush          on;
+        tcp_nodelay         on;
+        keepalive_timeout   65;
+        types_hash_max_size 2048;
+
+        include             /etc/nginx/mime.types;
+        default_type        application/octet-stream;
+        # include /etc/nginx/conf.d/*.conf;
+
+        server {
+            listen 80;
+            server_name  _;
+
+            client_max_body_size 100m;  # 录像及文件上传大小限制
+
+            location /ui/ {
+                try_files $uri / /index.html;
+                alias /opt/lina/;
+            }
+            location /luna/ {
+                try_files $uri / /index.html;
+                alias /opt/luna/;
+            }
+            location /media/ {
+                add_header Content-Encoding gzip;
+                root /opt/jumpserver/data/;
+            }
+            location /static/ {
+                root /opt/jumpserver/data/;
+            }
+            location /koko/ {
+                proxy_pass       http://localhost:5000;
+                proxy_buffering off;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                access_log off;
+            }
+            location /guacamole/ {
+                proxy_pass       http://localhost:8080/;
+                proxy_buffering off;
+                proxy_http_version 1.1;
+                proxy_request_buffering off;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $http_connection;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                access_log off;
+            }
+            location /ws/ {
+                proxy_pass http://localhost:8070;
+                proxy_buffering off;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                access_log off;
+            }
+            location /api/ {
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_pass http://localhost:8080;
+            }
+            location /core/ {
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_pass http://localhost:8080;
+            }
+            location / {
+                rewrite ^/(.*)$ /ui/$1 last;
+            }
+        }
+    }

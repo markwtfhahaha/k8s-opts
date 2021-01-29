@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jumpserver-service
+  namespace: mark-k8s-dev
+  labels:
+    app: jumpserver-service
+spec:
+  type: NodePort
+  selector:
+    app: jumpserver
+  ports:
+  - name: port1
+    protocol: TCP
+    port: 2222 # 服务端口, 内部可访问
+    targetPort: 2222 #Pod端口
+  - name: port2
+    protocol: TCP
+    port: 80 # 服务端口, 内部可访问
+    targetPort: 80 #Pod端口 
+
+#下面MySQL5.7和redis 需要另外手动建,并且创建好相关账号
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jumpserver-mysql-service
+  namespace: mark-k8s-dev
+  labels:
+    app: jumpserver-mysql-service
+spec:
+  type: NodePort
+  selector:
+    app: jumpserver-mysql
+  ports:
+  - name: port1
+    protocol: TCP
+    port: 3306 # 服务端口, 内部可访问
+    targetPort: 3306 #Pod端口
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jumpserver-redis6379-service
+  namespace: mark-k8s-dev
+  labels:
+    app: jumpserver-redis6379-service
+spec:
+  type: NodePort
+  selector:
+    app: jumpserver-redis6379
+  ports:
+  - name: port1
+    protocol: TCP
+    port: 6379 # 服务端口, 内部可访问
+    targetPort: 6379 #Pod端口

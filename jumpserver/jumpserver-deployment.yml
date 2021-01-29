@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jumpserver
+  namespace: mark-k8s-dev
+  labels:
+    app: jumpserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jumpserver
+  template:
+    metadata:
+      labels:
+        app: jumpserver
+    spec:
+      containers:
+        - name: jumpserver-core
+          image: docker-harbor.clubs999.com/public/jumpserver/jms_core:2.0.1
+          tty: true
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/opt/jumpserver/data"
+              subPath: "jumpserver/core_data" #文件路径,以挂载的pvc为基准
+              name: jumpserver-data
+          envFrom:
+            - configMapRef:
+                name: jumpserver
+
+        - name: jumpserver-koko
+          image: docker-harbor.clubs999.com/public/jumpserver/jms_koko:2.0.1
+          tty: true
+          ports:
+            - containerPort: 2222
+          volumeMounts:
+            - mountPath: "/opt/koko/data/keys"
+              subPath: "jumpserver/koko_keys" #文件路径,以挂载的pvc为基准
+              name: jumpserver-data
+          envFrom:
+            - configMapRef:
+                name: jumpserver
+
+        - name: jumpserver-guacamole
+          image: docker-harbor.clubs999.com/public/jumpserver/jms_guacamole:2.0.1
+          tty: true
+          volumeMounts:
+            - mountPath: "/config/guacamole/keys"
+              subPath: "jumpserver/guacamole_keys" #文件路径,以挂载的pvc为基准
+              name: jumpserver-data
+          envFrom:
+            - configMapRef:
+                name: jumpserver
+
+        - name: jumpserver-nginx
+          image: docker-harbor.clubs999.com/public/jumpserver/jms_nginx:2.0.1
+          tty: true
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: "/opt/jumpserver/data"
+              subPath: "jumpserver/core_data" #文件路径,以挂载的pvc为基准
+              name: jumpserver-data
+            - mountPath: "/etc/nginx/nginx.conf"
+              subPath: "nginx.conf"
+              name: nginx-cnf
+          envFrom:
+            - configMapRef:
+                name: jumpserver
+
+      volumes:
+        - name: jumpserver-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+        - name: nginx-cnf
+          configMap:
+            name: jumpserver
+
