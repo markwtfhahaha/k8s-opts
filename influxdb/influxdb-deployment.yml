@@ -40,6 +40,8 @@ spec:
               value: "admin"
             - name: INFLUXDB_ADMIN_USER_PASSWORD
               value: "123456"
+            - name: INFLUXDB_ADMIN_USER_TOKEN
+              value: "123456"
             - name: INFLUXDB_USER
               value: "tinode"
             - name: INFLUXDB_USER_PASSWORD
