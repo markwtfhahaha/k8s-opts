@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-service
+  namespace: mark-k8s-dev
+  labels:
+    app: elasticsearch-service
+spec:
+  type: NodePort
+  selector:
+    app: elasticsearch
+  ports:
+  - name: port1
+    protocol: TCP
+    port: 9200 #服务端口, 内部可访问
+    targetPort: 9200 #Pod端口
+  - name: port2
+    protocol: TCP
+    port: 9300 #服务端口, 内部可访问
+    targetPort: 9300 #Pod端口

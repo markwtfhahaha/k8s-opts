@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: mark-k8s-dev
+  labels:
+    app: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker-harbor.clubs999.com/public/bitnami/elasticsearch:7-debian-10
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          volumeMounts:
+            - mountPath: "/bitnami/elasticsearch/data"
+              subPath: "elasticsearch" #文件路径,以挂载的pvc为基准
+              name: elasticsearch-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: elasticsearch-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
