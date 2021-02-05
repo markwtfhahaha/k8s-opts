@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etcd
+  namespace: mark-k8s-dev
+  labels:
+    app: etcd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etcd
+  template:
+    metadata:
+      labels:
+        app: etcd
+    spec:
+      containers:
+        - name: etcd
+          image: docker-harbor.clubs999.com/public/bitnami/etcd:3-debian-10
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 2379
+            - containerPort: 2380
+          volumeMounts:
+            - mountPath: "/bitnami/etcd"
+              subPath: "etcd" #文件路径,以挂载的pvc为基准
+              name: etcd-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: ALLOW_NONE_AUTHENTICATION
+              value: "yes"
+      volumes:
+        - name: etcd-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
