@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-tcp
+  namespace: mark-k8s-dev
+  labels:
+    app: nginx-tcp
+data:
+  nginx-tcp.conf: |
+    user  nginx;
+    worker_processes  8;
+    worker_cpu_affinity auto;
+
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+    worker_rlimit_nofile 102400;
+
+
+    events {
+      use epoll;
+      worker_connections  102400;
+    }
+
+
+    stream {
+        log_format proxy '$remote_addr [$time_local] '
+                    '$protocol $status $bytes_sent $bytes_received '
+                    '$session_time "$upstream_addr" '
+                    '"$upstream_bytes_sent" "$upstream_bytes_received" "$upstream_connect_time"';
+        upstream backend{
+            server 10.10.10.54:1521 max_fails=2 fail_timeout=60s;
+        }
+
+        server{
+            listen 1521 so_keepalive=on;
+            access_log  /var/log/nginx/access.log proxy;
+            proxy_pass  backend;
+        }
+    }

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-tcp
+  namespace: mark-k8s-dev
+  labels:
+    app: nginx-tcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-tcp
+  template:
+    metadata:
+      labels:
+        app: nginx-tcp
+    spec:
+      containers:
+        - name: nginx-tcp
+          image: docker-harbor.clubs999.com/public/nginx
+          ports:
+            - containerPort: 1521
+          volumeMounts:
+            - mountPath: "/etc/nginx/nginx.conf"
+              subPath: "nginx-tcp.conf"
+              name: nginx-tcp-cnf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+      volumes:
+        - name: nginx-tcp-cnf
+          configMap:
+            name: nginx-tcp
