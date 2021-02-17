@@ -1,0 +1,1 @@
+external_url 更改的时候需要更改对应service,deployment的端口即可
