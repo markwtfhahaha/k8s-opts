@@ -1,4 +1,4 @@
-#汉化版
+#社区版,未汉化,但是可以直接设置成中文,推荐使用此官方社区版
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: gitlab
-          image: docker-harbor.clubs999.com/public/twang2218/gitlab-ce-zh:latest
+          image: docker-harbor.clubs999.com/public/gitlab/gitlab-ce:13.8.4-ce.0
           securityContext:
             enabled: true
             privileged: true
@@ -52,3 +52,5 @@ spec:
         - name: gitlab-data
           persistentVolumeClaim:
             claimName: gluster-claim-gitlab
+
+
