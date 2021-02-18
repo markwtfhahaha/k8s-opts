@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wowza
+  namespace: mark-k8s-dev
+  labels:
+    app: wowza
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wowza
+  template:
+    metadata:
+      labels:
+        app: wowza
+    spec:
+      containers:
+        - name: wowza
+          image: docker-harbor.clubs999.com/public/wowzamedia/wowza-streaming-engine-linux:4.8.8.01
+          command: ["/sbin/entrypoint.sh"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 1935
+            - containerPort: 8086
+            - containerPort: 8087
+            - containerPort: 8088
+          volumeMounts:
+            - mountPath: "/usr/local/WowzaStreamingEngine-4.8.8.01"
+              subPath: "wowza/WowzaStreamingEngine-4.8.8.01" #文件路径,以挂载的pvc为基准
+              name: wowza-data
+
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: WSE_MGR_USER
+              value: admin
+            - name: WSE_MGR_PASS
+              value: "123456"
+            # - name: WSE_LIC
+            #   value: xxxx-xxxx-xxxx-xxxx
+
+
+      volumes:
+        - name: wowza-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
