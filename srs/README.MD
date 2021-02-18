@@ -50,7 +50,7 @@ vhost __defaultVhost__ {
     min_latency     on;
     forward {
         enabled on;
-        destination 43.245.200.167:1935 43.245.200.47:1935;
+        destination 10.10.10.42:1935 10.10.10.43:1935;
     }
 }
 ```
