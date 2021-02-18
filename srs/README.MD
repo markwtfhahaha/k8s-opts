@@ -29,12 +29,24 @@ listen              1935;
 max_connections     10000;
 srs_log_tank        console;
 daemon              off;
+http_api {
+    enabled         on;
+    listen          1985;
+}
+http_server {
+    enabled         on;
+    listen          8080;
+    dir             ./objs/nginx/html;
+}
 vhost __defaultVhost__ {
     tcp_nodelay     on;
     min_latency     on;
     cluster {
         mode remote;
         origin 10.10.10.42;
+    }
+    http_remux {
+        enabled     on;
     }
 }
 ```
