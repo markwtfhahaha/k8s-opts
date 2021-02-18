@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: srs
+  namespace: mark-k8s-dev
+  labels:
+    app: srs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: srs
+  template:
+    metadata:
+      labels:
+        app: srs
+    spec:
+      containers:
+        - name: srs
+          image: docker-harbor.clubs999.com/public/ossrs/srs:3
+          ports:
+            - containerPort: 1935
+            - containerPort: 1985
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/usr/local/srs/conf/srs.conf"
+              subPath: "srs.conf" #文件路径,以挂载的pvc为基准
+              name: srs-conf
+
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+      volumes:
+        - name: srs-conf
+          configMap:
+            name: srs-conf
