@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcattest
+  namespace: mark-k8s-dev
+  labels:
+    app: tomcattest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcattest
+  template:
+    metadata:
+      labels:
+        app: tomcattest
+    spec:
+      containers:
+        - name: tomcattest
+          image: docker-harbor.clubs999.com/public/bitnami/tomcat:9.0-debian-10
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/bitnami"
+              subPath: "java-projects/tomcattest" #文件路径,以挂载的pvc为基准
+              name: tomcattest-data
+            - mountPath: "/opt/bitnami/tomcat/conf/server.xml" #挂载jboss配置文件，可以自定义
+              subPath: "service.xml"
+              name: server-conf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: tomcattest-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+        - name: server-conf
+          configMap:
+            name: server-xml
+
