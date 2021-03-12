@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-demo
+  namespace: mark-k8s-dev
+  labels:
+    app: golang-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: golang-demo
+  template:
+    metadata:
+      labels:
+        app: golang-demo
+    spec:
+      containers:
+        - name: golang-demo
+          image: docker-harbor.clubs999.com/public/alpine:3.12
+          workingDir: "/data"
+          command: ["/bin/sh"]
+          args: ["-c", "chmod +x ./golang-demo && ./golang-demo"]
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/data"
+              subPath: "golang-projects/golang-demo" #文件路径,以挂载的pvc为基准
+              name: golang-demo-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: golang-demo-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
