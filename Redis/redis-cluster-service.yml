@@ -6,7 +6,7 @@ metadata:
   labels:
     app: redis-cluster
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   clusterIP: 10.96.130.220 #service ip,可以自行定义，deployment要改,构建集群的命令要改
   selector:
     app: redis-cluster

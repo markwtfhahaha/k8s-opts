@@ -7,7 +7,7 @@ metadata:
   labels:
     app: fastdfs-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   clusterIP: 10.96.130.100
   selector:
     app: fastdfs

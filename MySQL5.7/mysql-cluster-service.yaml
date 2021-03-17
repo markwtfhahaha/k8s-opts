@@ -6,7 +6,7 @@ metadata:
   labels:
     app: mysql-0-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   selector:
     app: mysql-0
   ports:
@@ -24,7 +24,7 @@ metadata:
   labels:
     app: mysql-1-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   selector:
     app: mysql-1
   ports:
@@ -42,7 +42,7 @@ metadata:
   labels:
     app: mysql-2-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   selector:
     app: mysql-2
   ports:

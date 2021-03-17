@@ -6,7 +6,7 @@ metadata:
   labels:
     app: zookeeper-kafka-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   selector:
     app: zookeeper-kafka
   ports:
@@ -23,7 +23,7 @@ metadata:
   labels:
     app: kafka-1-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   selector:
     app: kafka-1
   ports:
@@ -40,7 +40,7 @@ metadata:
   labels:
     app: kafka-2-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   selector:
     app: kafka-2
   ports:
@@ -57,7 +57,7 @@ metadata:
   labels:
     app: kafka-3-service
 spec:
-  type: NodePort
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
   selector:
     app: kafka-3
   ports:
