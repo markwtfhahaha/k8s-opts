@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-service
+  namespace: mark-k8s-dev
+  labels:
+    app: nacos-service
+spec:
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
+  ports:
+    - port: 8848
+      name: server
+      targetPort: 8848
+    - port: 7848
+      name: rpc
+      targetPort: 7848
+  selector:
+    app: nacos
