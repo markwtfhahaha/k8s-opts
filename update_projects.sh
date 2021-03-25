@@ -9,20 +9,25 @@ then
     exit 1
 fi
 
-project=$1  #工程名
-scriptsDir=/home/opts/k8s #脚本存放目录
-k8sMasterIp=10.10.10.122  #k8s master ip,用于控制工程
 nameSpace=mark-k8s-dev #k8s命名空间，用于区分项目
+project=$1  #工程名
+scriptsDir=/home/opts/k8s/$nameSpace #脚本存放目录
+k8sMasterIp=10.10.10.122  #k8s master ip,用于控制工程
 
-ftpdir=/home/ftp/ftptest/mark-k8s-dev  #工程ftp目录,默认最后定义为命名空间,这样好区分
+ftpdir=/home/ftp/ftptest/$nameSpace  #工程ftp目录,默认最后定义为命名空间,这样好区分
 gfsDir=/home/gluster-data #gfs基础目录，项目所有文件存储位置，这里挂载gfs volume
-
-# gfsIp=10.10.10.131 #gfs IP 存储k8s系统持久化文件
-
 
 getmark() {
     echo "************************************************************************************************************************"
 }
+
+#查看xml解析程序是否存在,不存在下载一个
+check_getxmlresult-k8s() {
+ls $scriptsDir || mkdir -p $scriptsDir
+ls $scriptsDir/getxmlresult-k8s || wget https://minio.clubs999.com/sharefiles/getxmlresult-k8s
+chmod +x $scriptsDir/getxmlresult-k8s
+}
+check_getxmlresult-k8s
 
 #生成yml文件
 getmark
