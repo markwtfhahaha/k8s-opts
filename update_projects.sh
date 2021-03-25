@@ -22,12 +22,12 @@ getmark() {
 }
 
 #查看xml解析程序是否存在,不存在下载一个
-check_getxmlresult-k8s() {
-ls $scriptsDir || mkdir -p $scriptsDir
-ls $scriptsDir/getxmlresult-k8s || wget https://minio.clubs999.com/sharefiles/getxmlresult-k8s
-chmod +x $scriptsDir/getxmlresult-k8s
+checkgetxmlresultk8s() {
+    ls $scriptsDir || mkdir -p $scriptsDir
+    ls $scriptsDir/getxmlresult-k8s || wget https://minio.clubs999.com/sharefiles/getxmlresult-k8s -O $scriptsDir/getxmlresult-k8s
+    chmod +x $scriptsDir/getxmlresult-k8s
 }
-check_getxmlresult-k8s
+checkgetxmlresultk8s
 
 #生成yml文件
 getmark
