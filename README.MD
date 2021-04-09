@@ -18,13 +18,13 @@ k8s应用部署
             initialDelaySeconds: 15
             periodSeconds: 20
 3. 资源限制
-    resources:
-      requests:
-        memory: "1024Mi"
-        cpu: "1000m"
-      limits:
-        memory: "2048Mi"
-        cpu: "2000m"
+      resources:
+        requests:
+          memory: "1024Mi"
+          cpu: "1000m"
+        limits:
+          memory: "2048Mi"
+          cpu: "2000m"
 ```
 
 
