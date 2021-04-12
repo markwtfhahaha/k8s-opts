@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebrowser
+  namespace: mark-k8s-dev
+  labels:
+    app: filebrowser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filebrowser
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+    spec:
+      containers:
+        - name: filebrowser
+          image: docker-harbor.clubs999.com/public/filebrowser/filebrowser:v2
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: "/data"
+              subPath: "filebrowser/data" #文件路径,以挂载的pvc为基准
+              name: filebrowser-data
+            - mountPath: "/db"
+              subPath: "filebrowser/db" #文件路径,以挂载的pvc为基准
+              name: filebrowser-data
+            - mountPath: "/.filebrowser.json" #挂载jboss配置文件，可以自定义
+              subPath: "filebrowser.json"
+              name: file-conf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: filebrowser-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+        - name: file-conf
+          configMap:
+            name: filebrowser-conf

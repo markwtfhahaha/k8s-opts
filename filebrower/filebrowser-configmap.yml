@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebrowser-conf
+  namespace: mark-k8s-dev
+  labels:
+    app: filebrowser-conf
+data:
+  filebrowser.json: |
+    {
+      "port": 80,
+      "baseURL": "",
+      "address": "",
+      "log": "stdout",
+      "database": "/db/database.db",
+      "root": "/data"
+    }
