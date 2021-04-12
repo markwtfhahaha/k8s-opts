@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: mark-k8s-dev
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: docker-harbor.clubs999.com/public/bitnami/rabbitmq:3.8
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 4369
+            - containerPort: 5672
+            - containerPort: 25672
+            - containerPort: 15672
+          volumeMounts:
+            - mountPath: "/bitnami"
+              subPath: "rabbitmq" #文件路径,以挂载的pvc为基准
+              name: rabbitmq-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+      volumes:
+        - name: rabbitmq-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
