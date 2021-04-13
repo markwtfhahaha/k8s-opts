@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-service
+  namespace: mark-k8s-dev
+  labels:
+    app: postgresql-service
+spec:
+  type: ClusterIP #ClusterIP,如果不需要开放出去，可以改成ClusterIP，这样就不会创建随机端口到宿主机上面;NodePort 开放端口到宿主机
+  selector:
+    app: postgresql
+  ports:
+  - name: port1
+    protocol: TCP
+    port: 5432 # 服务端口, 内部可访问
+    targetPort: 5432 #Pod端口
+    

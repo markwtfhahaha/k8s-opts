@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: mark-k8s-dev
+  labels:
+    app: postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: docker-harbor.clubs999.com/public/bitnami/postgresql:13.2.0
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: "/bitnami/postgresql"
+              subPath: "postgresql/data" #文件路径,以挂载的pvc为基准
+              name: postgresql-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: POSTGRESQL_USERNAME
+              value: "dbuser"
+            - name: POSTGRESQL_PASSWORD
+              value: "dbpassword"
+            - name: POSTGRESQL_DATABASE
+              value: "dbname"
+      volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+
