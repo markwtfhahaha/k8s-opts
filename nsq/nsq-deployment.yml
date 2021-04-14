@@ -19,7 +19,7 @@ spec:
         - name: nsqd
           image: docker-harbor.clubs999.com/public/nsqio/nsq:v1.2.0
           command: ["/bin/sh"]
-          args: ["-c", "/nsqd --lookupd-tcp-address=nsq-service.mark-k8s-dev.svc.cluster.local:4160 --broadcast-address=nsq-service.mark-k8s-dev.svc.cluster.local --data-path=/data"]
+          args: ["-c", "/nsqd --lookupd-tcp-address=nsq-service.mark-k8s-dev.svc.cluster.local:4160 --broadcast-address=nsq-service.mark-k8s-dev.svc.cluster.local --data-path=/data --mem-queue-size=0"]
           ports:
             - containerPort: 4150
             - containerPort: 4151
