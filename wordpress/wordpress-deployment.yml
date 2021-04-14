@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-mariadb
+  namespace: mark-k8s-dev
+  labels:
+    app: wordpress-mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress-mariadb
+  template:
+    metadata:
+      labels:
+        app: wordpress-mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: docker-harbor.clubs999.com/public/bitnami/mariadb:10.3
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: "/bitnami/mariadb"
+              subPath: "wordpress-mariadb/mariadb" #文件路径,以挂载的pvc为基准
+              name: wordpress-mariadb-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: MARIADB_ROOT_PASSWORD
+              value: "rootpassword"
+            - name: MARIADB_USER
+              value: "wordpress_user"
+            - name: MARIADB_DATABASE
+              value: "wordpress_db"
+            - name: "MARIADB_PASSWORD"
+              value: "wordpress_password"
+            - name: MARIADB_PORT_NUMBER
+              value: "3306"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+
+        - name: wordpress
+          image: docker-harbor.clubs999.com/public/bitnami/wordpress:5
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+          volumeMounts:
+            - mountPath: "/bitnami/wordpress"
+              subPath: "wordpress-mariadb/wordpress" #文件路径,以挂载的pvc为基准
+              name: wordpress-mariadb-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: MARIADB_HOST
+              value: "wordpress-mariadb-service.mark-k8s-dev.svc.cluster.local"
+            - name: MARIADB_PORT_NUMBER
+              value: "3306"
+            - name: WORDPRESS_DATABASE_USER
+              value: "wordpress_user"
+            - name: WORDPRESS_DATABASE_NAME
+              value: "wordpress_db"
+            - name: WORDPRESS_DATABASE_PASSWORD
+              value: "wordpress_password"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "no"
+
+      volumes:
+        - name: wordpress-mariadb-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
