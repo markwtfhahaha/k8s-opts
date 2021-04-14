@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nsq
+  namespace: mark-k8s-dev
+  labels:
+    app: nsq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nsq
+  template:
+    metadata:
+      labels:
+        app: nsq
+    spec:
+      containers:
+        - name: nsqd
+          image: docker-harbor.clubs999.com/public/nsqio/nsq:v1.2.0
+          command: ["/bin/sh"]
+          args: ["-c", "/nsqd --lookupd-tcp-address=nsq-service.mark-k8s-dev.svc.cluster.local:4160 --broadcast-address=nsq-service.mark-k8s-dev.svc.cluster.local --data-path=/data"]
+          ports:
+            - containerPort: 4150
+            - containerPort: 4151
+          volumeMounts:
+            - mountPath: "/data"
+              subPath: "nsq/data" #文件路径,以挂载的pvc为基准
+              name: nsq-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+        - name: nsqlookupd
+          image: docker-harbor.clubs999.com/public/nsqio/nsq:v1.2.0
+          command: ["/bin/sh"]
+          args: ["-c", "/nsqlookupd"]
+          ports:
+            - containerPort: 4160
+            - containerPort: 4161
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+        - name: nsqadmin
+          image: docker-harbor.clubs999.com/public/nsqio/nsq:v1.2.0
+          command: ["/bin/sh"]
+          args: ["-c", "/nsqadmin --lookupd-http-address=nsq-service.mark-k8s-dev.svc.cluster.local:4161"]
+          ports:
+            - containerPort: 4171
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+      volumes:
+        - name: nsq-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+
