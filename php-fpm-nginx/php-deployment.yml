@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-fpm-nginx
+  namespace: mark-k8s-dev
+  labels:
+    app: php-fpm-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-fpm-nginx
+  template:
+    metadata:
+      labels:
+        app: php-fpm-nginx
+    spec:
+      containers:
+        - name: php-fpm
+          image: docker-harbor.clubs999.com/public/bitnami/php-fpm:7.4
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - mountPath: "/app"
+              subPath: "php-fpm-nginx/php" #文件路径,以挂载的pvc为基准
+              name: php-fpm-nginx-data
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+        - name: nginx
+          image: docker-harbor.clubs999.com/public/bitnami/nginx:1.19
+          securityContext:
+            enabled: true
+            privileged: true
+            allowPrivilegeEscalation: true
+            runAsUser: 0
+            fsGroup: 0
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: "/app"
+              subPath: "php-fpm-nginx/php" #文件路径,以挂载的pvc为基准
+              name: php-fpm-nginx-data
+            - mountPath: "/opt/bitnami/nginx/conf/server_blocks/php-nginx.conf"
+              subPath: "php-nginx.conf"
+              name: nginx-tcp-cnf
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+
+      volumes:
+        - name: php-fpm-nginx-data
+          persistentVolumeClaim:
+            claimName: gluster-claim-pub
+        - name: nginx-tcp-cnf
+          configMap:
+            name: php-nginx
