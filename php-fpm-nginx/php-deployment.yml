@@ -44,7 +44,7 @@ spec:
               name: php-fpm-nginx-data
             - mountPath: "/opt/bitnami/nginx/conf/server_blocks/php-nginx.conf"
               subPath: "php-nginx.conf"
-              name: nginx-tcp-cnf
+              name: nginx-php-cnf
           env:
             - name: TZ
               value: "Asia/Shanghai"
@@ -53,6 +53,6 @@ spec:
         - name: php-fpm-nginx-data
           persistentVolumeClaim:
             claimName: gluster-claim-pub
-        - name: nginx-tcp-cnf
+        - name: nginx-php-cnf
           configMap:
             name: php-nginx
