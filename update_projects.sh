@@ -140,6 +140,6 @@ then
           exit 1
         fi
         ansible $k8sMasterIp -m shell -a "ls $destdir || mkdir -p $destdir"
-        ansible $k8sMasterIp -m synchronize -a "src=$srcdir/ dest=$destdir/"
+        ansible $k8sMasterIp -m synchronize -a "src=$srcdir/ dest=$destdir/  delete=yes"
 fi
 getmark
